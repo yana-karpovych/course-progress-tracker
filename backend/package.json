@@ -1,0 +1,19 @@
+{
+  "name": "course-progress-tracker-backend",
+  "version": "1.0.0",
+  "description": "Course Progress Tracker API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.0"
+  }
+}
