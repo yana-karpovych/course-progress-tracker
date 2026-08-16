@@ -1,3 +1,5 @@
+# Local dev only: Postgres for backend/frontend running via npm (not full Docker stack).
+# Full stack: use docker-compose.yml instead.
 services:
   postgres:
     image: postgres:16
