@@ -2,7 +2,7 @@
 
 A simple full-stack application for tracking course completion progress. Create courses, add lessons, and mark them complete.
 
-## How to run
+## How to run the project
 
 ### Docker (recommended)
 
@@ -35,39 +35,6 @@ curl http://localhost:4000/health
 Expected response: JSON with `status: "ok"`.
 
 Data is stored in the Docker volume `postgres_data`. If you run `docker compose down` and then `docker compose up` again, your courses and lessons should still be there. Do not use `docker compose down -v` if you want to keep the data.
-
-### Local development
-
-Start PostgreSQL only (not the full stack):
-
-```bash
-docker compose -f docker-compose.dev.yml up -d
-```
-
-Backend (`backend/`):
-
-```bash
-cd backend
-cp .env.example .env
-npm install
-npx prisma migrate dev
-npm run dev
-```
-
-On Windows CMD: `copy .env.example .env`  
-On Windows PowerShell: `Copy-Item .env.example .env`
-
-The API runs at http://localhost:4000. Health check: `GET /health`.
-
-Frontend (`frontend/`):
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-The UI runs at http://localhost:5173. In dev, the frontend calls `/api/...` and Vite proxies those requests to http://localhost:4000.
 
 ## Technologies used
 
@@ -151,7 +118,7 @@ Inside `docker-compose.yml`, the backend service uses host name `postgres` (the 
 
 **`frontend/Dockerfile`** — multi-stage build: `npm run build` then nginx serves `dist/` on port 3000.
 
-**`frontend/nginx.conf`** — serves static files and proxies `/api/` to the backend service; `try_files` supports React Router URLs on refresh.
+**`frontend/nginx.conf`** — serves static files; `try_files` supports React Router URLs on refresh.
 
 The browser runs on your machine, so the built frontend uses `http://localhost:4000` for API calls (set at build time via `VITE_API_URL`).
 
@@ -182,7 +149,7 @@ The browser runs on your machine, so the built frontend uses `http://localhost:4
 
 **AI tool used:** Cursor IDE — Agent mode (Composer), model `composer-2.5`
 
-**What I used AI for:** Planning the step order, scaffolding the backend and frontend, implementing API routes and Prisma schema, React pages and components, Docker files, and the first draft of this README. I worked one BUILD-STEPS phase at a time and checked each step myself in the terminal and browser before moving on. Internal specs live in `.cursor/docs/` (not part of the app runtime).
+**What I used AI for:** Planning the step order, scaffolding the backend and frontend, implementing API routes and Prisma schema, React pages and components, Docker files. I worked one phase at a time and checked each step myself in the terminal and browser before moving on. Internal specs live in `.cursor/docs/` (not part of the app runtime).
 
 **2–3 example prompts:**
 
@@ -233,11 +200,9 @@ I also pasted a Superpowers session block once per Agent chat so the Agent would
 
 **What was difficult:**
 
-- This was my first project with Express, Prisma, and PostgreSQL together. Understanding the order — schema, then migrate, then routes — took time even with AI help.
+- Understanding how schema, migrations, and routes fit together in one repo took time, even with AI help.
 - `DATABASE_URL` uses `localhost` when Node runs on my PC, but `postgres` when the backend runs inside Docker. Same database, different host name depending on where the process runs.
 - Port conflicts (`EADDRINUSE` on 4000 or 5432) when an old container or dev server was still running; I had to stop the project or kill the process before restarting.
 - On Windows, PowerShell `curl` is not the same as bash `curl`; empty JSON arrays print nothing in the terminal unless you use `@($r).Count`.
 - UI state rules were easy to get wrong: `loadError` (page blocked) versus `actionError` (list still visible), and clearing errors on Retry.
 - Docker networking for the frontend: the browser runs on the host, so API URLs must be reachable from the browser (`localhost:4000`), not the internal Docker service name `backend`.
-
-Most of these issues showed up during step-by-step verification, not in the final demo path on video.
